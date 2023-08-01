@@ -45,3 +45,9 @@ resource "aws_route" "default_route" {
     destination_cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.vscode_example_internet_gateway.id
 }
+
+# create aws route table association
+resource "aws_route_table_association" "vscode_example_publicAssoc" {
+    subnet_id = aws_subnet.vscode_example_public_subnet.id
+    route_table_id = aws_route_table.vscode_example_publicRT.id
+}
