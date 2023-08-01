@@ -51,3 +51,24 @@ resource "aws_route_table_association" "vscode_example_publicAssoc" {
     subnet_id = aws_subnet.vscode_example_public_subnet.id
     route_table_id = aws_route_table.vscode_example_publicRT.id
 }
+
+# create security group
+resource "aws_security_group" "vscode_example_sg" {
+  name        = "dev_sg"
+  description = "dev security group"
+  vpc_id      = aws_vpc.vscode_example_vpc.id
+
+  ingress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["89.41.26.54/32"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+  }
+}
