@@ -29,3 +29,19 @@ resource "aws_internet_gateway" "vscode_example_internet_gateway" {
     Name = "dev-igw"
   }
 }
+
+# create public_route_table
+resource "aws_route_table" "vscode_example_publicRT" {
+    vpc_id = aws_vpc.vscode_example_vpc.id
+
+    tags = {
+        Name = "dev-publicRT"
+    }
+}
+
+# create aws default route table
+resource "aws_route" "default_route" {
+    route_table_id = aws_route_table.vscode_example_publicRT.id
+    destination_cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.vscode_example_internet_gateway.id
+}
