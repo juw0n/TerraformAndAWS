@@ -32,24 +32,24 @@ resource "aws_internet_gateway" "vscode_example_internet_gateway" {
 
 # create public_route_table
 resource "aws_route_table" "vscode_example_publicRT" {
-    vpc_id = aws_vpc.vscode_example_vpc.id
+  vpc_id = aws_vpc.vscode_example_vpc.id
 
-    tags = {
-        Name = "dev-publicRT"
-    }
+  tags = {
+    Name = "dev-publicRT"
+  }
 }
 
 # create aws default route table
 resource "aws_route" "default_route" {
-    route_table_id = aws_route_table.vscode_example_publicRT.id
-    destination_cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.vscode_example_internet_gateway.id
+  route_table_id         = aws_route_table.vscode_example_publicRT.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.vscode_example_internet_gateway.id
 }
 
 # create aws route table association
 resource "aws_route_table_association" "vscode_example_publicAssoc" {
-    subnet_id = aws_subnet.vscode_example_public_subnet.id
-    route_table_id = aws_route_table.vscode_example_publicRT.id
+  subnet_id      = aws_subnet.vscode_example_public_subnet.id
+  route_table_id = aws_route_table.vscode_example_publicRT.id
 }
 
 # create security group
@@ -59,21 +59,38 @@ resource "aws_security_group" "vscode_example_sg" {
   vpc_id      = aws_vpc.vscode_example_vpc.id
 
   ingress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["89.41.26.54/32"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["89.41.26.54/32"]
   }
 
   egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 # create a key pair for ec2
 resource "aws_key_pair" "vscode_example_auth" {
-    key_name = "vscodeTerraformKey"
-    public_key = file("~/.ssh/vscodeTerraformKey.pub")
+  key_name   = "vscodeTerraformKey"
+  public_key = file("~/.ssh/vscodeTerraformKey.pub")
+}
+
+# create/launch ec2 instance
+resource "aws_instance" "dev_instance_node" {
+  instance_type          = "t2.micro"
+  ami                    = data.aws_ami.server_ami.id
+  key_name               = aws_key_pair.vscode_example_auth.id
+  vpc_security_group_ids = [aws_security_group.vscode_example_sg.id]
+  subnet_id              = aws_subnet.vscode_example_public_subnet.id
+
+  root_block_device {
+    volume_size = 10
+  }
+
+  tags = {
+    name = "dev_node"
+  }
 }
