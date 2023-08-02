@@ -72,3 +72,8 @@ resource "aws_security_group" "vscode_example_sg" {
     cidr_blocks      = ["0.0.0.0/0"]
   }
 }
+# create a key pair for ec2
+resource "aws_key_pair" "vscode_example_auth" {
+    key_name = "vscodeTerraformKey"
+    public_key = file("~/.ssh/vscodeTerraformKey.pub")
+}
