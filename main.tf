@@ -94,4 +94,14 @@ resource "aws_instance" "dev_instance_node" {
   tags = {
     name = "dev_node"
   }
+
+
+  provisioner "local-exec" {
+    command = templatefile("linux-ssh-config.tpl", {
+        hostname = self.map_public_ip,
+        user = "ubuntu",
+        identityfile = "~/.ssh/vscodeTerraformKey"
+    })
+    interpreter =["bash", "-c"]
+  }
 }
