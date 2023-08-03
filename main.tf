@@ -85,7 +85,7 @@ resource "aws_instance" "dev_instance_node" {
   key_name               = aws_key_pair.vscode_example_auth.id
   vpc_security_group_ids = [aws_security_group.vscode_example_sg.id]
   subnet_id              = aws_subnet.vscode_example_public_subnet.id
-  user_data = file("userdata.tpl")
+  user_data              = file("userdata.tpl")
 
   root_block_device {
     volume_size = 10
@@ -98,10 +98,10 @@ resource "aws_instance" "dev_instance_node" {
 
   provisioner "local-exec" {
     command = templatefile("linux-ssh-config.tpl", {
-        hostname = self.map_public_ip,
-        user = "ubuntu",
-        identityfile = "~/.ssh/vscodeTerraformKey"
+      hostname     = self.public_ip,
+      user         = "ubuntu",
+      identityfile = "~/.ssh/vscodeTerraformKey"
     })
-    interpreter =["bash", "-c"]
+    interpreter = ["bash", "-c"]
   }
 }
