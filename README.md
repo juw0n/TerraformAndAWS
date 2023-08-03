@@ -1,6 +1,6 @@
 # TerraformAndAWS
 
-userdata script
+<!-- userdata script -->
 #!/bin/bash
 sudo apt-get update -y &&
 sudo apt-get install -y \

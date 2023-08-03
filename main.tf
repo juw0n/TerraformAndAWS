@@ -62,7 +62,7 @@ resource "aws_security_group" "vscode_example_sg" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["89.41.26.54/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -85,6 +85,7 @@ resource "aws_instance" "dev_instance_node" {
   key_name               = aws_key_pair.vscode_example_auth.id
   vpc_security_group_ids = [aws_security_group.vscode_example_sg.id]
   subnet_id              = aws_subnet.vscode_example_public_subnet.id
+  user_data = file("userdata.tpl")
 
   root_block_device {
     volume_size = 10
